@@ -76,9 +76,13 @@ NOTE: брал *последний* закрепленный пост - вооб
 2. пулинг - но тут не уверен будет ли норм
 3. либо юзать модель с большим контекстным окном чтобы туда влезало это всё - например `deepvk/USER-bge-m3` - контекстное окно 8к - по идее туда может влезть много чего
 
-Попробую суммаризацию...
+##### Подход с суммаразацией
 
-todo:
+1. `SELECT id FROM parse.posts_content WHERE raw_text IS NOT NULL AND raw_text <> '';`
+2. `SELECT id, channel_id, post_date FROM parse.post_metadata;`
+3. `SELECT id, channel_id, post_date FROM ml_house.final_basis_with_metrics_v2;`
 
-* scripts for getting posts previous to ad post
-* analyze length of concatted posts
+На основе этих таблиц [с помощью этого скрипта](/embeddings/e5_instruct/channels/not_simple/find_ids_of_prev_posts_for_ad_posts.ipynb) рассчитываем отображение от `id поста с рекламой` к `N id постов (содержащих текст) предыдущих по времени к этому рекламному посту`.
+
+Далее, с помощью [скрипта](/embeddings/e5_instruct/channels/not_simple/load_prev_posts_texts.ipynb) скачиваем все текста прошлых постов по отношению к рекламному.
+

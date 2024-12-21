@@ -2,7 +2,6 @@ import os
 import time
 
 import polars as pl
-from pathlib import Path
 import psycopg
 from dotenv import load_dotenv
 from tqdm import tqdm
@@ -22,10 +21,20 @@ except Exception as e:
     print(f"Error connecting to the database: {e}")
     raise
 
+
+def save(rows, file_name):
+    print(f"\nSaving to {file_name}")
+    df = pl.DataFrame(rows, schema=COLUMNS, orient="row")
+    df.write_csv(file_name)
+
+
 SCHEME = "parse"
-TABLE = "channels"
-COLUMNS = ["id", "title", "about", "last_pinned_msg_id"]
-TO_FILE = Path("/home/deniskirbaba/Documents/influai-data/channels_data_for_emd.csv")
+TABLE = "posts_metadata"
+COLUMNS = ["id", "channel_id", "post_date"]
+# TO_FILE = Path("/home/deniskirbaba/Documents/influai-data/embeddings/posts_meta.csv")
+
+# QUERY = "SELECT id FROM parse.posts_content WHERE raw_text IS NOT NULL AND raw_text <> '';"
+QUERY = f"SELECT {', '.join(COLUMNS)} FROM {SCHEME}.{TABLE};"
 
 try:
     rows = []
@@ -33,24 +42,20 @@ try:
         rows_fetched = 0
         start_time = time.time()
 
-        for row in tqdm(
-            cursor.stream(f"SELECT {', '.join(COLUMNS)} FROM {SCHEME}.{TABLE};"), leave=False
-        ):
+        for row in tqdm(cursor.stream(QUERY), leave=False):
             rows_fetched += 1
             rows += [row]
-            if rows_fetched % 10_000 == 0:
-                elapsed_time = time.time() - start_time
-                print(f"Time spent: {elapsed_time:.2f} seconds, Rows fetched: {rows_fetched}")
 
-        elapsed_time = time.time() - start_time
-        print(f"\nFinal results:")
-        print(f"Total time: {elapsed_time:.2f} seconds")
-        print(f"Total rows fetched: {rows_fetched}")
+            if rows_fetched % 5_000_000 == 0:
+                save(
+                    rows,
+                    f"/home/deniskirbaba/Documents/influai-data/embeddings/posts_meta_{rows_fetched}.csv",
+                )
+                rows = []
 
-        print(f"Saving to {TO_FILE}")
-        df = pl.DataFrame(rows, schema=COLUMNS, orient="row")
-        df.write_csv(TO_FILE)
-
+    save(
+        rows, f"/home/deniskirbaba/Documents/influai-data/embeddings/posts_meta_{rows_fetched}.csv"
+    )
 
 except Exception as e:
     print(f"Error during data fetching: {e}")
@@ -58,3 +63,5 @@ except Exception as e:
 finally:
     conn.close()
     print("Connection closed.")
+
+print(f"\nTotal rows fetched: {rows_fetched}")
