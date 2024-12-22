@@ -90,7 +90,7 @@ NOTE: брал *последний* закрепленный пост - вооб
 
 Суммаризация с помощью [`mistral-large-latest`](https://docs.mistral.ai/getting-started/models/models_overview/#premier-models):
 
-* [промпт](/embeddings/e5_instruct/channels/not_simple/summmary_prompt.txt)
+* [промпт](/embeddings/e5_instruct/channels/not_simple/summary_prompt.txt)
 * [Скрипт для создания саммари с помощью Mistal large](/embeddings/e5_instruct/channels/not_simple/summarization.py). [Пример результата его работы](/embeddings/e5_instruct/channels/not_simple/example_summary_output.json).
 * ВРЕМЯ: 10к рекламных постов обрабатывается за 12 часов (т.е. для создания 10к саммари по предыдущим 10 постам перед таргетным рекламным). Всего у нас пока что 177к рекламных постов, значит ~216 часов, но вообще говоря можно параллеить на разные MISTRAL_AI - у меня например есть 5 таких - значит за 2-3 дня смогу обработать все посты.
 
