@@ -2,7 +2,7 @@
 
 ## Model
 
-From this https://huggingface.co/spaces/mteb/leaderboard.
+From this <https://huggingface.co/spaces/mteb/leaderboard>.
 
 Выбрал эту `intfloat/multilingual-e5-large-instruct`. ~500M params, max tokens 514 - маловато.
 
@@ -62,13 +62,13 @@ NOTE: брал *последний* закрепленный пост - вооб
 [simple_channels_emb_e5_instruct_calculation](/embeddings/e5_instruct/channels/ch_wo_posts_emb_w_e5_instruct.ipynb)
 
 * рассчитывал эмбеддинги по всем каналам которые есть в `scrape.channels`. channel's title, about скачал из `scrape.channels` с помощью [скрипта](/embeddings/download.py)
-* для того чтобы получить текст закрепленных постов написал скрипт - он лежит в репе `scrappers` (https://github.com/influai/scrappers/blob/dev/scripts/get_raw_text_of_pinned_posts.ipynb)
+* для того чтобы получить текст закрепленных постов написал скрипт - он лежит в репе `scrappers` (<https://github.com/influai/scrappers/blob/dev/scripts/get_raw_text_of_pinned_posts.ipynb>)
 * все проценты которые расписал выше, получены из анализа из этого ipynb
-* тоже считал в COlab (~30min)
+* тоже считал в Colab (~30min)
 
 [ipynb для загрузки эмбедов в БД](/embeddings/e5_instruct/channels/ch_wo_posts_emb_e5_instruct_load_to_db.ipynb)
 
-#### [Not simple](/embeddings/e5_instruct/channels/not_simple/) - WIP
+#### [Not simple](/embeddings/e5_instruct/channels/not_simple/)
 
 ПРосто сконкатенировать посты не получится - не влезет в модель. Значит надо либо:
 
@@ -86,3 +86,19 @@ NOTE: брал *последний* закрепленный пост - вооб
 
 Далее, с помощью [скрипта](/embeddings/e5_instruct/channels/not_simple/load_prev_posts_texts.ipynb) скачиваем все текста прошлых постов по отношению к рекламному.
 
+[Анализ длины](/embeddings/e5_instruct/channels/not_simple/analyze_prev_posts_texts.ipynb)
+
+Суммаризация с помощью [`mistral-large-latest`](https://docs.mistral.ai/getting-started/models/models_overview/#premier-models):
+
+* [промпт](/embeddings/e5_instruct/channels/not_simple/summmary_prompt.txt)
+* [Скрипт для создания саммари с помощью Mistal large](/embeddings/e5_instruct/channels/not_simple/summarization.py). [Пример результата его работы](/embeddings/e5_instruct/channels/not_simple/example_summary_output.json).
+* ВРЕМЯ: 10к рекламных постов обрабатывается за 12 часов (т.е. для создания 10к саммари по предыдущим 10 постам перед таргетным рекламным). Всего у нас пока что 177к рекламных постов, значит ~216 часов, но вообще говоря можно параллеить на разные MISTRAL_AI - у меня например есть 5 таких - значит за 2-3 дня смогу обработать все посты.
+
+Далее, с помощью [скрипта](/embeddings/e5_instruct/channels/not_simple/ch_sum_emb_w_e5_instruct.ipynb) высчитываем эмбеды каналов по его предшествующим рекламному постам.
+
+* сконкатенировал название, описание канала и суммаризацию по постам (т.е. не исопльзовал текст закрепленного поста)
+* время расчета - пока хз, но ~2часа будет в Colab думаю
+
+[Сохранение в `embeddings.summary_channel_emb`](/embeddings/e5_instruct/channels/not_simple/ch_sum_emb_e5_instruct_load_to_db.ipynb)
+
+**PS**: пока что не залил в бд эти эмбеды, т.к. не закончил считать суммаризацию.
