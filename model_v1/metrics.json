@@ -1,0 +1,38 @@
+[
+    {
+        "model": "CatBoost_Model_LogLinQuantile",
+        "metrics": {
+            "MAE": 1.0596,
+            "MSE": 1.7416,
+            "RMSE": 1.3197,
+            "R2": -7.075
+        }
+    },
+    {
+        "model": "CatBoost_Model_RMSE",
+        "metrics": {
+            "MAE": 0.3686,
+            "MSE": 0.197,
+            "RMSE": 0.4439,
+            "R2": 0.0864
+        }
+    },
+    {
+        "model": "CatBoost_Model_RMSLE",
+        "metrics": {
+            "MAE": 0.3838,
+            "MSE": 0.181,
+            "RMSE": 0.4255,
+            "R2": 0.1606
+        }
+    },
+    {
+        "model": "CatBoost_Model_RMSE_best",
+        "metrics": {
+            "MAE": 0.3644,
+            "MSE": 0.1908,
+            "RMSE": 0.4368,
+            "R2": 0.1155
+        }
+    }
+]
