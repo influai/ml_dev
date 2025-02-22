@@ -29,7 +29,7 @@ __NOTE__: используется *последний по времени* за
 * Parameters: ~500M
 * Context: 514 токенов
 
-#### [Posts](./e5-large-instruct/posts/)
+## [Posts](./e5-large-instruct/posts/)
 
 В [length-analysis](./e5-large-instruct/posts/length-analysis.ipynb) показано, что рекламные посты "влезают" в контекстное окно модели (обрезается только 5%).
 
